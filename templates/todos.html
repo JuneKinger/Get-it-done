@@ -17,10 +17,32 @@
     {% else %}
 
         <ul>
+            <!-- formerly tasks was a list of strings but now they are tasks OBJECTS which are not simple strings -->
+            <!-- To properly render it in the browser, we need to include .name-->
+            <!-- get the name object from task, task.name-->
             {% for task in tasks %}
-            <li>{{task}}</li>
+            <li>{{task.name}}
+                <!-- each task item has its own little form with inline style where "Done" is displayed inline-->
+                <form method='POST' action ="/delete-task" style="display: inline-block">
+                    <!-- hidden input that holds the id of the given task, task.id-->
+                    <!-- we can use the id in our application -->
+                    <input type="hidden" name="task-id" value="{{task.id}}" />
+                    <input type="submit" value="Done!" />
+                </form>
+            </li>
             {% endfor %}
         </ul>
 
     {% endif %}
+
+    <hr />
+    <!-- display all completed/deleted tasks -->
+    <h2>Completed</h2>
+
+    <ul>
+        {% for task in completed_tasks %}
+        <li>{{task.name}}</li>
+        {% endfor %}
+    </ul>
+
 {% endblock %}
