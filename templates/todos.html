@@ -24,7 +24,7 @@
             <li>{{task.name}}
                 <!-- each task item has its own little form with inline style where "Done" is displayed inline-->
                 <form method='POST' action ="/delete-task" style="display: inline-block">
-                    <!-- hidden input that holds the id of the given task, task.id-->
+                    <!-- input is hidden so we can send id back to main.py to be used, value={{ task.id }}-->
                     <!-- we can use the id in our application -->
                     <input type="hidden" name="task-id" value="{{task.id}}" />
                     <input type="submit" value="Done!" />

@@ -3,14 +3,27 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
+#mysql+pymysql://user name/get-it-done = database name
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://get-it-done:june@localhost:8889/get-it-done'
 app.config['SQLALCHEMY_ECHO'] = True
+
+# instantiate db with SQLAlchemy and app
 db = SQLAlchemy(app)
 
 class Task(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
+
+    # After we have the class with the properties id and name (above),
+    # create an initial database - initialize the database from 
+    # the python interpreter
+
+    # (flask-env) $ python
+    # >>> from main import db, Blog
+    # >>> db.create_all()
+    # >>> db.session.commit()
+
     # Sometimes we may actually want to remove/delete a row
     # from the db, but often a functionality would be to keep
     # deleted tasks and just have a boolean flag that told us
@@ -19,17 +32,19 @@ class Task(db.Model):
     # complete tasks depending on the situation. To do that, we 
     # add a new property to our task class with a boolean
     # to indicate whether a given task has been completed.
-    # Either place a default value like below or with self. below
-    # completed = db.Column(db.Boolean, default=False)
+    # Either place a default value like below (self.completed = False)
+    # or completed = db.Column(db.Boolean, default=False)
     
     completed = db.Column(db.Boolean)
+    
     def __init__(self, name):
         self.name = name
         self.completed = False
+    # Occasionally, instead of a deleted/completed flag as above, 
     # we would need to recreate the table to include the new
     # completed column as we did before at the shell
     # >>> from main import db, Task
-    # >>> db.create_all() - looks for classes that have not
+    # >>> db.create_all() - this looks for classes that have not
     # been created yet and it creates them. In this case, 
     # our task table already existed so db.create_all()
     # did not update or re-create the table - it just left it
@@ -56,11 +71,12 @@ def index():
     # render template to pass ALL of the tasks objects out from the database.
     # first request the server for all of the task objects
     # tasks = Task.query.all()
-    # we can filter for only certain tasks with a filter by
+    # or we can filter for only certain tasks with a filter by
     # and get only those from the db to display in the main view
     tasks = Task.query.filter_by(completed=False).all()
     # also display completed tasks 
     completed_tasks = Task.query.filter_by(completed=True).all()
+    
     return render_template('todos.html',title="Get It Done!", 
     tasks=tasks, completed_tasks=completed_tasks)
 
